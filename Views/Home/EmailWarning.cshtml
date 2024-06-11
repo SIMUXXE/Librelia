@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = "Verify";
+}
+<div class="text-center">
+    <h1 class="display-4">We sent you a verification Mail, check your inbox</h1>
+	<br/>
+	@if (ViewBag.mailError != null)
+	{
+		<div class="alert alert-danger">@ViewBag.mailError</div>
+	}
+</div>

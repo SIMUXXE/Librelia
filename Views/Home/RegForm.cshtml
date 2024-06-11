@@ -1,0 +1,43 @@
+﻿@model Libreria_Elia_V0._0.Models.User
+@{
+	ViewData["Title"] = "Register Here!";
+}
+<h1>@ViewData["title"]</h1>
+<p>What? Already signed up? <a asp-controller="Home" asp-action="LogForm">Login here</a>.</p>
+<div class="row">
+
+	<div class="col-md-4">
+
+		<form asp-action="RegForm" method="post">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-group">
+				<label asp-for="Email" class="control-label text-primary"></label>
+				<input asp-for="Email" class="form-control border border-primary" />
+				<span asp-validation-for="Email" class="text-danger"></span>
+			</div>
+
+			<div class="form-group">
+				<label asp-for="Name" class="control-label text-primary"></label>
+				<input asp-for="Name" class="form-control border border-primary" />
+				<span asp-validation-for="Name" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Surname" class="control-label text-primary"></label>
+				<input asp-for="Surname" class="form-control border border-primary" />
+				<span asp-validation-for="Surname" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Password" class="control-label text-primary"></label>
+				<input asp-for="Password" type="password" class="form-control border border-primary" />
+				<span asp-validation-for="Password" class="text-danger"></span>
+			</div>
+			<br/>
+			@if (ViewBag.signUpError != null)
+			{
+				<div class="alert alert-danger">@ViewBag.signUpError</div>
+			}
+			<br/>
+			<button type="submit" class="btn btn-outline-primary">Submit</button>
+		</form>
+	</div>
+</div>

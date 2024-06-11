@@ -1,0 +1,71 @@
+﻿@model List<User>
+@{
+    ViewData["Title"] = "Admin";
+}
+
+<div class="row">
+    @if (ViewBag.ghostUsersError != null)
+    {
+        <div class="alert alert-danger">@ViewBag.ghostUsersError</div>
+    }
+    @if (Model.Count() > 0)
+    {
+        <table class="table table-striped">
+            <tr>
+                <td>Email</td>
+                <td>Nome</td>
+                <td>Cognome</td>
+                <td>password</td>
+                <td>Permessi</td>
+                <td>Accetta</td>
+                <td>Rifiuta</td>
+            </tr>
+            @{
+                for (int i = 0; i < Model.Count(); i++)
+                {
+                    <tr>
+                        <td>@Model[i].Email</td>
+                        <td>@Model[i].Name</td>
+                        <td>@Model[i].Surname</td>
+                        <td>@Model[i].Password</td>
+                        <td>@Model[i].IsAdmin</td>
+                        <td>
+                            <a asp-controller="Admin" asp-action="ApproveUser"
+                               asp-route-email="@Model[i].Email"
+                               asp-route-name="@Model[i].Name"
+                               asp-route-surname="@Model[i].Surname"
+                               asp-route-pwd="@Model[i].Password"
+                               asp-route-isA="@Model[i].IsAdmin" class="btn btn-light">&#x2705</a>
+                        </td>
+                        <td>
+                            <a asp-controller="Admin" asp-action="DeclineUser" asp-route-email="@Model[i].Email" class="btn btn-light">&#x274C</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    }
+    else
+    {
+        <h1>Attualmente non ci sono utenti in attesa di accettazione</h1>
+        <div aria-label="Orange and tan hamster running in a metal wheel" role="img" class="wheel-and-hamster">
+            <div class="wheel"></div>
+            <div class="hamster">
+                <div class="hamster__body">
+                    <div class="hamster__head">
+                        <div class="hamster__ear"></div>
+                        <div class="hamster__eye"></div>
+                        <div class="hamster__nose"></div>
+                    </div>
+                    <div class="hamster__limb hamster__limb--fr"></div>
+                    <div class="hamster__limb hamster__limb--fl"></div>
+                    <div class="hamster__limb hamster__limb--br"></div>
+                    <div class="hamster__limb hamster__limb--bl"></div>
+                    <div class="hamster__tail"></div>
+                </div>
+            </div>
+            <div class="spoke"></div>
+        </div>
+
+    }
+</div>

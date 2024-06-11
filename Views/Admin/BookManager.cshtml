@@ -1,0 +1,79 @@
+﻿@model Libreria_Elia_V0._0.Models.Book
+@{
+	ViewData["Title"] = "Aggiorna Volume";
+}
+<div class="row">
+	<h1>Modifica volume</h1>
+	<div class="col-md-4">
+		<form asp-action="UpdateBook" asp-controller="Admin" method="post">
+
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<h5>Identificativi</h5>
+			<div class="form-group">
+				<input asp-for="Isbn" maxlength="13" placeholder="ISBN" value="@Model.Isbn" class="form-control border border-primary" />
+				<span asp-validation-for="Isbn" class="text-danger"></span>
+
+				<input asp-for="Title" placeholder="Titolo" value="@Model.Title" class="form-control border border-primary" />
+				<span asp-validation-for="Title" class="text-danger"></span>
+
+				<input asp-for="Subtitle" placeholder="Sottotitolo" value="@Model.Subtitle" class="form-control border border-primary" />
+				<span asp-validation-for="Subtitle" class="text-danger"></span>
+			</div>
+			<h5>Autori</h5>
+			<div class="form-group">
+				<input asp-for="Author01" placeholder="Autore 1" value="@Model.Author01" class="form-control border border-primary" />
+				<span asp-validation-for="Author01" class="text-danger"></span>
+
+				<input asp-for="Author02" placeholder="Autore 2 (facoltativo)" value="@Model.Author02" class="form-control border border-primary" />
+				<span asp-validation-for="Author02" class="text-danger"></span>
+
+				<input asp-for="Author03" placeholder="Autore 3 (facoltativo)" value="@Model.Author03" class="form-control border border-primary" />
+				<span asp-validation-for="Author03" class="text-danger"></span>
+			</div>
+			<h5>Generalità</h5>
+			<div class="form-group">
+				<input asp-for="Genre" placeholder="Genere" value="@Model.Genre" class="form-control border border-primary" />
+				<span asp-validation-for="Genre" class="text-danger"></span>
+
+				<input asp-for="PublishingHouse" placeholder="Casa Editrice" value="@Model.PublishingHouse" class="form-control border border-primary" />
+				<span asp-validation-for="PublishingHouse" class="text-danger"></span>
+
+				<input asp-for="ReleaseYear" placeholder="Anno d'uscita'" value="@Model.ReleaseYear" class="form-control border border-primary" />
+				<span asp-validation-for="ReleaseYear" class="text-danger"></span>
+
+				<input asp-for="Language" placeholder="Lingua del volume" value="@Model.Language" class="form-control border border-primary" />
+				<span asp-validation-for="Language" class="text-danger"></span>
+			</div>
+			<h5>Parametri inventario</h5>
+			<div class="form-group">
+				<input asp-for="Volume" placeholder="Volume" value="@Model.Volume" class="form-control border border-primary" />
+				<span asp-validation-for="Volume" class="text-danger"></span>
+
+				<input asp-for="InventoryNumber" placeholder="Id in inventario (alfanumerico)" value="@Model.InventoryNumber" class="form-control border border-primary" />
+				<span asp-validation-for="InventoryNumber" class="text-danger"></span>
+
+				<input asp-for="NumberOfcopys" placeholder="Numero di Copie" value="@Model.NumberOfcopys" readonly class="form-control border border-primary" />
+				<span asp-validation-for="InventoryNumber" class="text-danger"></span>
+
+			</div>
+
+			<div class="form-group">
+				<input asp-for="Placement" placeholder="posizione in inventario" value="@Model.Placement" class="form-control border border-primary" />
+				<span asp-validation-for="Placement" class="text-danger"></span>
+
+				<input asp-for="Operator" placeholder="Mail dell'Operatore'" class="form-control border border-primary" />
+				<span asp-validation-for="Operator" class="text-danger"></span>
+
+				<span asp-validation-for="Abstract" class="text-danger"></span>
+				<textarea asp-for="Abstract" placeholder="Sinossi" value="@Model.Abstract" rows="5" class="form-control border border-primary">
+
+				</textarea>
+				<span asp-validation-for="Availability" class="text-danger"></span>
+			</div>
+
+			<br />
+
+			<button type="submit" class="btn btn-outline-primary">Salva Modifiche</button>
+		</form>
+	</div>
+</div>

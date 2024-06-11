@@ -1,0 +1,30 @@
+﻿@model Libreria_Elia_V0._0.Models.LoggedUser
+@{
+	ViewData["Title"] = "Welcome Back!";
+}
+<h1>@ViewData["title"]</h1>
+<p>Don't have an account yet? <a asp-controller="Home" asp-action="RegForm">Sing-up here</a></p>
+<div class="row">
+	<div class="col-md-4">
+		<form asp-action="LogForm" method="post">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-group">
+				<label asp-for="Email" class="control-label text-primary"></label>
+				<input asp-for="Email" class="form-control border border-primary" />
+				<span asp-validation-for="Email" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Password" class="control-label text-primary"></label>
+				<input asp-for="Password" type="password" class="form-control border border-primary"/>
+				<span asp-validation-for="Password" class="text-danger"></span>
+			</div>
+			<br/>
+			@if (ViewBag.logInError != null)
+			{
+				<div class="alert alert-danger">@ViewBag.logInError</div>
+			}
+			<br/>
+			<button type="submit" class="btn btn-outline-primary">Login</button>
+		</form>
+	</div>
+</div>

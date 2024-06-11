@@ -1,0 +1,50 @@
+﻿@model Libreria_Elia_V0._0.Models.LoggedUser
+@{
+     ViewData["Title"] = Model.Email;
+}
+<head>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .user-info {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-container {
+            margin-top: 20px;
+            text-align: center;
+            text-align: left;
+        }
+
+        .btn {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<div class="container">
+    <h1>Benvenuto</h1>
+
+    <div class="user-info">
+        <h3>Informazioni Utente:</h3>
+        <p>Email: @Model.Email</p>
+        <p>Permessi: utente</p>
+    </div>
+
+    <div class="btn-container">
+        <a asp-controller="User" asp-action="ReservationForm" class="btn btn-primary">Prenota un libro</a><br>
+        <a asp-controller="User" asp-action="ActivityManager" class="btn btn-primary">Visualizza attività</a><br>
+        <a asp-controller="User" asp-action="Logout" class="btn btn-warning">logout</a>
+    </div>
+</div>

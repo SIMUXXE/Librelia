@@ -1,0 +1,84 @@
+﻿@model Libreria_Elia_V0._0.Models.Book
+@{
+    ViewData["Title"] = "Admin";
+}
+<div class="row">
+	<div class="col-md-4">
+		<form asp-action="BookForm" method="post">
+			@if (ViewBag.BookError != null)
+			{
+				<div class="alert">@ViewBag.logInError</div>
+			}
+
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<h5>Identificativi</h5>
+			<div class="form-group">
+				<input asp-for="Isbn" placeholder="ISBN" maxlength="13" class="form-control border border-primary" />
+				<span asp-validation-for="Isbn" class="text-danger"></span>
+
+				<input asp-for="Title" placeholder="Titolo" class="form-control border border-primary" />
+				<span asp-validation-for="Title" class="text-danger"></span>
+
+				<input asp-for="Subtitle" placeholder="Sottotitolo" class="form-control border border-primary" />
+				<span asp-validation-for="Subtitle" class="text-danger"></span>
+			</div>
+			<h5>Autori</h5>
+			<div class="form-group">
+				<input asp-for="Author01" placeholder="Autore 1" class="form-control border border-primary" />
+				<span asp-validation-for="Author01" class="text-danger"></span>
+
+				<input asp-for="Author02" placeholder="Autore 2 (facoltativo)" class="form-control border border-primary" />
+				<span asp-validation-for="Author02" class="text-danger"></span>
+
+				<input asp-for="Author03" placeholder="Autore 3 (facoltativo)" class="form-control border border-primary" />
+				<span asp-validation-for="Author03" class="text-danger"></span>
+			</div>
+			<h5>Generalità</h5>
+			<div class="form-group">
+				<input asp-for="Genre" placeholder="Genere" class="form-control border border-primary" />
+				<span asp-validation-for="Genre" class="text-danger"></span>
+
+				<input asp-for="PublishingHouse" placeholder="Casa editrice" class="form-control border border-primary" />
+				<span asp-validation-for="PublishingHouse" class="text-danger"></span>
+
+				<input asp-for="ReleaseYear" placeholder="Anno di uscita" class="form-control border border-primary" />
+				<span asp-validation-for="ReleaseYear" class="text-danger"></span>
+
+				<input asp-for="Language" placeholder="Lingua" class="form-control border border-primary" />
+				<span asp-validation-for="Language" class="text-danger"></span>
+			</div>
+			<h5>Parametri inventario</h5>
+			<div class="form-group">
+				<input asp-for="Volume" placeholder="Volume" class="form-control border border-primary" />
+				<span asp-validation-for="Volume" class="text-danger"></span>
+
+				<input asp-for="InventoryNumber" placeholder="Id in inventario" class="form-control border border-primary" />
+				<span asp-validation-for="InventoryNumber" class="text-danger"></span>
+			</div>
+
+			<div class="form-group">
+				<input asp-for="Placement" placeholder="Posizione" class="form-control border border-primary" />
+				<span asp-validation-for="Placement" class="text-danger"></span>
+
+				<input asp-for="Operator" placeholder="Email dell'Operatore" class="form-control border border-primary" />
+				<span asp-validation-for="Operator" class="text-danger"></span>
+
+				<select asp-for="Availability" class="form-control border border-primary">
+					<option selected="selected">Selezionare Disponibilità	&#11015</option>
+					<option value="0" >Disponibile</option>
+					<option value="1" >Prenotato</option>
+				</select>
+				<span asp-validation-for="Availability" class="text-danger"></span>
+
+				<textarea asp-for="Abstract" placeholder="Sinossi" rows="5" class="form-control border border-primary">
+
+				</textarea>
+				<span asp-validation-for="Abstract" class="text-danger"></span>
+			</div>
+
+			<br/>
+
+			<button type="submit" class="btn btn-outline-primary">Aggiungi volume</button>
+		</form>
+	</div>
+</div>

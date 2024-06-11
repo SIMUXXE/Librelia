@@ -1,0 +1,70 @@
+﻿@model List<Book>
+@{
+    ViewData["title"] = "scaffale";
+}
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="FoundBooks" asp-controller="Admin" method="post">
+            <input type="text" name="searchTerm" placeholder="Cerca per: Titolo, Autore, Editore, ISBN o Genere" style="width:450px">
+            <button type="submit" class="btn btn-outline-secondary" style="margin-bottom: 10">Cerca</button>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <table class="table table-striped">
+        <tr>
+            <td>ISBN</td>
+            <td>Titolo</td>
+            <td>Sottotitolo</td>
+            <td>Autore 1</td>
+            <td>Autore 2</td>
+            <td>Autore 3</td>
+            <td>Editore</td>
+            <td>Anno</td>
+            <td>Copie</td>
+            <td>Volume</td>
+            <td>Lingua</td>
+            <td>Genere</td>
+            <td>Sinossi</td>
+            <td>Disponibilità</td>
+        </tr>
+        @{
+            for (int i = 0; i < Model.Count(); i++)
+            {
+                <tr>
+                    <td>@Model[i].Isbn</td>
+                    <td>@Model[i].Title</td>
+                    <td>@Model[i].Subtitle</td>
+                    <td>@Model[i].Author01</td>
+                    <td>@Model[i].Author02</td>
+                    <td>@Model[i].Author03</td>
+                    <td>@Model[i].PublishingHouse</td>
+                    <td>@Model[i].ReleaseYear</td>
+                    <td>@Model[i].NumberOfcopys</td>
+                    <td>@Model[i].Volume</td>
+                    <td>@Model[i].Language</td>
+                    <td>@Model[i].Genre</td>
+                    <td>@Model[i].Abstract</td>
+                    @{
+                        switch (Model[i].Availability)
+                        {
+                            case 0:
+                                <td style="background-color:lightgreen">disponibile</td>
+                                break;
+                            case 1:
+                                <td style="background-color:yellow">prenotato</td>
+                                break;
+                            case 2:
+                                <td style="background-color:lightcoral">In prestito</td>
+                                break;
+                        }
+                    }
+                    <td>
+                        <a asp-action="BookManager" asp-controller="Admin" asp-route-id="@Model[i].Book_id" asp-route-nCopys="@Model[i].NumberOfcopys" class="btn btn-secondary">Modifica</a>
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+</div>

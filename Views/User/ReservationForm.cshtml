@@ -1,0 +1,80 @@
+﻿@model List<Book>
+@{
+    ViewData["title"] = "Scaffale";
+}
+@if (Model.Count() > 0)
+{
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="FoundBooks" asp-controller="User" method="post">
+                <input type="text" name="searchTerm" placeholder="Cerca per: Titolo, Autore, Editore, ISBN o Genere" style="width:450px">
+                <button type="submit" class="btn btn-outline-secondary" style="margin-bottom: 10">Cerca</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <table class="table table-striped">
+            <tr>
+                <td>Id libro</td>
+                <td>ISBN</td>
+                <td>Titolo</td>
+                <td>Autore</td>
+                <td>Editore</td>
+                <td>Genere</td>
+                <td>Disponibilità</td>
+            </tr>
+            @{
+                for (int i = 0; i < Model.Count(); i++)
+                {
+                    <tr>
+                        <td>@Model[i].Book_id</td>
+                        <td>@Model[i].Isbn</td>
+                        <td>@Model[i].Title</td>
+                        <td>@Model[i].Author01</td>
+                        <td>@Model[i].PublishingHouse</td>
+                        <td>@Model[i].Genre</td>
+                        @{
+                            switch (Model[i].Availability)
+                            {
+                                case 0:
+                                    <td>
+                                        <a asp-action="Reserve" asp-controller="User" asp-route-BookId="@Model[i].Book_id"  class="btn btn-success">Prenota</a>
+                                    </td>
+                                    break;
+                                case 1:
+                                    <td style="background-color:yellow">prenotato</td>
+                                    break;
+                                case 2:
+                                    <td style="background-color:lightcoral">In prestito</td>
+                                    break;
+                            }
+                        }
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+}
+else
+{
+    <h1>Qualcosa è andato Storto...</h1>
+
+    <div aria-label="Orange and tan hamster running in a metal wheel" role="img" class="wheel-and-hamster">
+        <div class="wheel"></div>
+        <div class="hamster">
+            <div class="hamster__body">
+                <div class="hamster__head">
+                    <div class="hamster__ear"></div>
+                    <div class="hamster__eye"></div>
+                    <div class="hamster__nose"></div>
+                </div>
+                <div class="hamster__limb hamster__limb--fr"></div>
+                <div class="hamster__limb hamster__limb--fl"></div>
+                <div class="hamster__limb hamster__limb--br"></div>
+                <div class="hamster__limb hamster__limb--bl"></div>
+                <div class="hamster__tail"></div>
+            </div>
+        </div>
+        <div class="spoke"></div>
+    </div>
+}
