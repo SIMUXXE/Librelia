@@ -11,7 +11,7 @@ namespace Libreria_Elia_V0._0.Controllers
     public class HomeController : Controller
     {
         private readonly IConfiguration _configuration;
-        private MySqlConnection dbConn;
+        private MySqlConnection HomeDbConn;
         private readonly string _smtpServer;
         private readonly string _smtpUsername;
         private readonly string _smtpPassword;
@@ -19,7 +19,7 @@ namespace Libreria_Elia_V0._0.Controllers
         public HomeController(IConfiguration configuration)
         {
             _configuration = configuration;
-            dbConn = new MySqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            HomeDbConn = new MySqlConnection(_configuration.GetConnectionString("DefaultConnection"));
             _smtpServer = _configuration["EmailSettings:SmtpServer"];
             _smtpUsername = _configuration["EmailSettings:Username"];
             _smtpPassword = _configuration["EmailSettings:Password"];
@@ -60,19 +60,19 @@ namespace Libreria_Elia_V0._0.Controllers
         {
             string query = "SELECT users.email, ghost_users.email FROM users INNER JOIN ghost_users ON users.email = @mail";
 
-            using (dbConn)
-            using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
+            using (HomeDbConn)
+            using (MySqlCommand cmd = new MySqlCommand(query, HomeDbConn))
             {
                 cmd.Parameters.AddWithValue("@mail", mailToCheck);
 
                 try
                 {
-                    dbConn.Open();
+                    HomeDbConn.Open();
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (reader.HasRows)
                         {
-                            dbConn.Close();
+                            HomeDbConn.Close();
                             return true;
                         }
                     }
@@ -83,7 +83,7 @@ namespace Libreria_Elia_V0._0.Controllers
                 }
                 finally
                 {
-                    dbConn.Close();
+                    HomeDbConn.Close();
                 }
             }
             return false;
@@ -113,7 +113,7 @@ namespace Libreria_Elia_V0._0.Controllers
 
             try
             {
-                if (MailExists(senderAddress))
+                if (!MailExists(senderAddress))
                 {
                     smtpClient.Send(verificationEmail);
                     ViewBag.mailError = "Verification mail sent";
@@ -127,7 +127,9 @@ namespace Libreria_Elia_V0._0.Controllers
             }
             catch (Exception ex)
             {
-                ViewBag.logInError = $"An error occurred:\n{ex.Message}";
+                //Error Log
+                Console.WriteLine(ex.Message);
+                ViewBag.signUpError = $"An error occurred:\n{ex.Message}";
                 return false;
             }
         }
@@ -151,10 +153,10 @@ namespace Libreria_Elia_V0._0.Controllers
                 try
                 {
                     ViewBag.logInError = null;
-                    dbConn.Open();
+                    HomeDbConn.Open();
                     string query = "SELECT * FROM users WHERE email=@Email AND pwd=@Password;";
 
-                    using (var cmd = new MySqlCommand(query, dbConn))
+                    using (var cmd = new MySqlCommand(query, HomeDbConn))
                     {
                         cmd.Parameters.AddWithValue("@Email", toLog.Email);
                         cmd.Parameters.AddWithValue("@Password", toLog.Password);
@@ -165,20 +167,20 @@ namespace Libreria_Elia_V0._0.Controllers
                             {
                                 case 0:
                                     reader.Close();
-                                    dbConn.Close();
+                                    HomeDbConn.Close();
                                     HttpContext.Session.SetString("UserMail", toLog.Email);
                                     HttpContext.Session.SetString("UserPassword", toLog.Password);
                                     HttpContext.Session.SetInt32("UserTypeLogged", 0);
                                     return RedirectToAction("UserMainPage", "User", new LoggedUser(HttpContext.Session.GetString("UserMail"), HttpContext.Session.GetString("UserPwd")));
                                 case 1:
                                     reader.Close();
-                                    dbConn.Close();
+                                    HomeDbConn.Close();
                                     HttpContext.Session.SetString("AdminMail", toLog.Email);
                                     HttpContext.Session.SetString("AdminPassword", toLog.Password);
                                     HttpContext.Session.SetInt32("UserTypeLogged", 1);
                                     return RedirectToAction("AdminMainPage", "Admin", new LoggedUser(HttpContext.Session.GetString("AdminMail"), HttpContext.Session.GetString("AdminPassword")));
                                 default:
-                                    dbConn.Close();
+                                    HomeDbConn.Close();
                                     return View();
                             }
                         }
@@ -188,12 +190,12 @@ namespace Libreria_Elia_V0._0.Controllers
                 catch
                 {
                     ViewBag.logInError = "Credenziali non valide";
-                    dbConn.Close();
+                    HomeDbConn.Close();
                     return View();
                 }
                 finally
                 {
-                    dbConn.Close();
+                    HomeDbConn.Close();
                 }
             }
             else
@@ -206,45 +208,39 @@ namespace Libreria_Elia_V0._0.Controllers
         public IActionResult RegForm(User data)
         {
             if (!ModelState.IsValid)
+            {
                 return View();
+            }
             else
             {
-                using (dbConn)
+                ViewBag.signUpError = null;
+                try
                 {
-                    try
+                    string queryInsert = "INSERT INTO ghost_users (email, name, surname, pwd, is_admin) VALUES (@Email, @Name, @Surname, @Password, '0')";
+                    if (SendVerificationMail(data.Email))
                     {
-                        ViewBag.signUpError = null;
-                        dbConn.Open();
-                        string queryInsert = $"INSERT INTO ghost_users (email, name, surname, pwd, is_admin) VALUES (@email, @name, @surname,@password, '{0}')";
-                        if (SendVerificationMail(data.Email))
+                        using (var conn = new MySqlConnection(HomeDbConn.ConnectionString))
                         {
-                            using (MySqlCommand cmd = new MySqlCommand(queryInsert, dbConn))
+                            conn.Open();
+                            using (var cmd = new MySqlCommand(queryInsert, conn))
                             {
-                                cmd.Parameters.AddWithValue("@email", data.Email);
-                                cmd.Parameters.AddWithValue("@name", data.Name);
-                                cmd.Parameters.AddWithValue("@surname", data.Surname);
-                                cmd.Parameters.AddWithValue("@password", data.Password);
+                                cmd.Parameters.AddWithValue("@Email", data.Email);
+                                cmd.Parameters.AddWithValue("@Name", data.Name);
+                                cmd.Parameters.AddWithValue("@Surname", data.Surname);
+                                cmd.Parameters.AddWithValue("@Password", data.Password);
                                 cmd.ExecuteNonQuery();
                             }
-                            dbConn.Close();
-                            return RedirectToAction("EmailWarning");
                         }
-                        else
-                        {
-                            dbConn.Close();
-                            return View();
-                        }
-                    }
-                    catch
-                    {
-                        dbConn.Close();
-                        return View();
-                    }
-                    finally
-                    {
-                        dbConn.Close();
+                        return RedirectToAction("EmailWarning");
                     }
                 }
+                catch (Exception ex)
+                {
+                    // Log dell'errore
+                    Console.WriteLine(ex.Message);
+                    return View();
+                }
+                return View();
             }
         }
 
