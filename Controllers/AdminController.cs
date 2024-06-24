@@ -156,43 +156,11 @@ namespace Libreria_Elia_V0._0.Controllers
                 return RedirectToAction("LogForm", "Home");
         }
 
-        private int GetCopyNumber(string title)
-        {
-            int count = 0;
-            string q = "SELECT COUNT(title) FROM books WHERE title = @value;";
-            using (var conn = new MySqlConnection(_configuration.GetConnectionString("DefaultConnection")))
-            {
-                try
-                {
-                    conn.Open();
-                    using (var cmd = new MySqlCommand(q, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@value", title);
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                                count += reader.GetInt32(0);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    //Error log
-                    Console.WriteLine("GETCOPYNUMBER EX: " + ex.Message);
-                }
-                finally
-                {
-                    conn.Close();
-                }
-            }
-            return count;
-        }
-
         public IActionResult BookListView()
         {
             if (HttpContext.Session.GetString("AdminMail") != null)
             {
-                string q = "SELECT *, COUNT(isbn) From books GROUP BY title;";
+                string q = "SELECT *, COUNT(isbn) FROM books GROUP BY title;";
                 List<Book> bookList = new List<Book>();
                 using (MySqlCommand cmd = new MySqlCommand(q, AdminDbConn))
                 {
@@ -239,7 +207,7 @@ namespace Libreria_Elia_V0._0.Controllers
                 return RedirectToAction("LogForm", "Home");
         }
 
-        [Route("{email}/{name}/{surname}/{pwd}/{isA}")]
+        [Route("ApproveUser/{email}/{name}/{surname}/{pwd}/{isA}")]
         public IActionResult ApproveUser(string email, string name, string surname, string pwd, int isA)
         {
             ViewBag.ghostUsersError = null;
@@ -268,6 +236,37 @@ namespace Libreria_Elia_V0._0.Controllers
             finally { AdminDbConn.Close(); }
             return RedirectToAction("UsersToAccept");
         }
+
+        [Route("ApproveUserAsAdmin/{email}/{name}/{surname}/{pwd}/{isA}")]
+        public IActionResult ApproveUserAsAdmin(string email, string name, string surname, string pwd)
+        {
+            ViewBag.ghostUsersError = null;
+            string query = "DELETE FROM `ghost_users` WHERE email = @mail; INSERT INTO users (email, name, surname, pwd, is_admin) VALUES (@email, @name, @surname, @password, @is_admin);";
+
+            try
+            {
+                AdminDbConn.Open();
+                using (MySqlCommand Cmd = new MySqlCommand(query, AdminDbConn))
+                {
+                    Cmd.Parameters.AddWithValue("@mail", email);        //Aggiunge i valori di DELETE
+                    Cmd.Parameters.AddWithValue("@email", email);       //Aggiunge i valori di INSERT
+                    Cmd.Parameters.AddWithValue("@name", name);         //Aggiunge i valori di INSERT
+                    Cmd.Parameters.AddWithValue("@surname", surname);   //Aggiunge i valori di INSERT
+                    Cmd.Parameters.AddWithValue("@password", pwd);      //Aggiunge i valori di INSERT
+                    Cmd.Parameters.AddWithValue("@is_admin", 1);        //Aggiunge i valori di INSERT
+                    Cmd.ExecuteNonQuery();                              //Esegue lo statement
+                }
+
+                SendResponseMail(email, 1);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ghostUsersError = ex.Message;
+            }
+            finally { AdminDbConn.Close(); }
+            return RedirectToAction("UsersToAccept");
+        }
+
 
         [Route("{email}")]
         public IActionResult DeclineUser(string email)
@@ -462,13 +461,13 @@ namespace Libreria_Elia_V0._0.Controllers
         {
             List<Book> bookList = new List<Book>();
             string q = @$"SELECT *, COUNT(isbn) FROM books WHERE title LIKE '%{searchTerm}%' GROUP BY title
-           UNION ALL SELECT *, COUNT(isbn) FROM books WHERE publishing_house LIKE '%{searchTerm}%' GROUP BY title
-           UNION ALL SELECT *, COUNT(isbn) FROM books WHERE isbn LIKE '%{searchTerm}%' GROUP BY title
-           UNION ALL SELECT *, COUNT(isbn) FROM books WHERE author01 LIKE '%{searchTerm}%' GROUP BY title
-           UNION ALL SELECT *, COUNT(isbn) FROM books WHERE author02 LIKE '%{searchTerm}%' GROUP BY title
-           UNION ALL SELECT *, COUNT(isbn) FROM books WHERE author03 LIKE '%{searchTerm}%' GROUP BY title
-           UNION ALL SELECT *, COUNT(isbn) FROM books WHERE genre LIKE '%{searchTerm}%' GROUP BY title
-           UNION ALL SELECT *, COUNT(isbn) FROM books WHERE isbn LIKE '%{searchTerm}%' GROUP BY title";
+               UNION ALL SELECT *, COUNT(isbn) FROM books WHERE publishing_house LIKE '%{searchTerm}%' GROUP BY title
+               UNION ALL SELECT *, COUNT(isbn) FROM books WHERE author01 LIKE '%{searchTerm}%' GROUP BY title
+               UNION ALL SELECT *, COUNT(isbn) FROM books WHERE author02 LIKE '%{searchTerm}%' GROUP BY title
+               UNION ALL SELECT *, COUNT(isbn) FROM books WHERE author03 LIKE '%{searchTerm}%' GROUP BY title
+               UNION ALL SELECT *, COUNT(isbn) FROM books WHERE genre LIKE '%{searchTerm}%' GROUP BY title
+               UNION ALL SELECT *, COUNT(isbn) FROM books WHERE isbn LIKE '%{searchTerm}%' GROUP BY isbn;";
+
             using (MySqlCommand srcCmd = new MySqlCommand(q, AdminDbConn))
             {
                 try

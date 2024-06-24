@@ -17,7 +17,8 @@
                 <td>Cognome</td>
                 <td>password</td>
                 <td>Permessi</td>
-                <td>Accetta</td>
+                <td>Approva</td>
+                <td>Approva Come Admin</td>
                 <td>Rifiuta</td>
             </tr>
             @{
@@ -36,6 +37,14 @@
                                asp-route-surname="@Model[i].Surname"
                                asp-route-pwd="@Model[i].Password"
                                asp-route-isA="@Model[i].IsAdmin" class="btn btn-light">&#x2705</a>
+                        </td>
+                        <td>
+                            <a asp-controller="Admin" asp-action="ApproveUserAsAdmin"
+                               asp-route-email="@Model[i].Email"
+                               asp-route-name="@Model[i].Name"
+                               asp-route-surname="@Model[i].Surname"
+                               asp-route-pwd="@Model[i].Password"
+                               asp-route-isA="@Model[i].IsAdmin" class="btn btn-light">&#128142</a>
                         </td>
                         <td>
                             <a asp-controller="Admin" asp-action="DeclineUser" asp-route-email="@Model[i].Email" class="btn btn-light">&#x274C</a>
