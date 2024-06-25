@@ -58,12 +58,11 @@ namespace Libreria_Elia_V0._0.Controllers
 
         private bool MailExists(string mailToCheck)
         {
-            string query = "SELECT users.email, ghost_users.email FROM users INNER JOIN ghost_users ON users.email = @mail";
-
+            string query = "SELECT users.email FROM users where users.email = @mail union all SELECT ghost_users.email from ghost_users where ghost_users.email = @mail;";
             using (HomeDbConn)
             using (MySqlCommand cmd = new MySqlCommand(query, HomeDbConn))
             {
-                cmd.Parameters.AddWithValue("@mail", mailToCheck);
+                cmd.Parameters.AddWithValue("@mail", mailToCheck.Trim());
 
                 try
                 {
@@ -101,7 +100,7 @@ namespace Libreria_Elia_V0._0.Controllers
 
             //credenziali SMTP per il mittente
             string smtpServer = _smtpServer;
-            string username = "libreriaelia@gmail.com";
+            string username = _smtpUsername;
             string password = _smtpPassword;
 
             SmtpClient smtpClient = new SmtpClient(smtpServer, 587);
@@ -113,7 +112,7 @@ namespace Libreria_Elia_V0._0.Controllers
 
             try
             {
-                if (!MailExists(senderAddress))
+                if (!MailExists(rAdress))
                 {
                     smtpClient.Send(verificationEmail);
                     ViewBag.mailError = "Verification mail sent";

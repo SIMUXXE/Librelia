@@ -176,15 +176,21 @@ namespace Libreria_Elia_V0._0.Controllers
                                     Book_id = (int)reader["book_id"],
                                     Isbn = reader["isbn"].ToString(),
                                     Title = reader["title"].ToString(),
+                                    Subtitle = reader["subtitle"].ToString(),
                                     Author01 = reader["author01"].ToString(),
                                     Author02 = reader["author02"].ToString(),
                                     Author03 = reader["author03"].ToString(),
+                                    Genre = reader["genre"].ToString(),
                                     PublishingHouse = reader["publishing_house"].ToString(),
                                     ReleaseYear = reader["release_year"].ToString(),
+                                    Language = reader["lang"].ToString(),
+                                    Volume = reader["volume"].ToString(),
+                                    InventoryNumber = reader["inventory_number"].ToString(),
                                     Placement = reader["placement"].ToString(),
-                                    Genre = reader["genre"].ToString(),
-                                    NumberOfcopys = reader.GetInt32(17),
-                                    Availability = Convert.ToInt32((reader["availability"]))
+                                    Operator = reader["operator"].ToString(),
+                                    Availability = Convert.ToInt32((reader["availability"])),
+                                    Abstract = reader["abstract"].ToString(),
+                                    NumberOfcopys = reader.GetInt32(17)
                                 };
                                 bookList.Add(x);
                             }
@@ -307,7 +313,7 @@ namespace Libreria_Elia_V0._0.Controllers
                     {
                         ViewBag.BookError = null;
                         string q = @$"INSERT INTO `books` (isbn, title, subtitle, author01, author02, author03, genre, publishing_house, release_year, lang, volume, inventory_number, placement, operator, availability, abstract) 
-											VALUES ('{newBookDatas.Isbn}', '{newBookDatas.Title}', '{newBookDatas.Subtitle}', '{newBookDatas.Author01}', '{newBookDatas.Author02}', '{newBookDatas.Author03}', '{newBookDatas.PublishingHouse}', '{newBookDatas.Genre}', 
+											VALUES ('{newBookDatas.Isbn}', '{newBookDatas.Title}', '{newBookDatas.Subtitle}', '{newBookDatas.Author01}', '{newBookDatas.Author02}', '{newBookDatas.Author03}', '{newBookDatas.Genre}', '{newBookDatas.PublishingHouse}', 
 											'{newBookDatas.ReleaseYear}', '{newBookDatas.Language}', '{newBookDatas.Volume}', '{newBookDatas.InventoryNumber}', '{newBookDatas.Placement}', '{newBookDatas.Operator}', '{newBookDatas.Availability}', '{newBookDatas.Abstract}')";
 
                         AdminDbConn.Open();
@@ -477,16 +483,28 @@ namespace Libreria_Elia_V0._0.Controllers
                     {
                         while (reader.Read())
                         {
-                            Book book = new Book();
-                            book.Book_id = Convert.ToInt32(reader["book_id"]);
-                            book.Isbn = reader["isbn"].ToString();
-                            book.Title = reader["title"].ToString();
-                            book.Author01 = reader["author01"].ToString();
-                            book.PublishingHouse = reader["publishing_house"].ToString();
-                            book.Availability = Convert.ToInt32(reader["availability"]);
-                            book.Genre = reader["genre"].ToString();
-                            book.NumberOfcopys = reader.GetInt32(17);
-                            bookList.Add(book);
+                            Book x = new Book()
+                            {
+                                Book_id = (int)reader["book_id"],
+                                Isbn = reader["isbn"].ToString(),
+                                Title = reader["title"].ToString(),
+                                Subtitle = reader["subtitle"].ToString(),
+                                Author01 = reader["author01"].ToString(),
+                                Author02 = reader["author02"].ToString(),
+                                Author03 = reader["author03"].ToString(),
+                                Genre = reader["genre"].ToString(),
+                                PublishingHouse = reader["publishing_house"].ToString(),
+                                ReleaseYear = reader["release_year"].ToString(),
+                                Language = reader["lang"].ToString(),
+                                Volume = reader["volume"].ToString(),
+                                InventoryNumber = reader["inventory_number"].ToString(),
+                                Placement = reader["placement"].ToString(),
+                                Operator = reader["operator"].ToString(),
+                                Availability = Convert.ToInt32((reader["availability"])),
+                                Abstract = reader["abstract"].ToString(),
+                                NumberOfcopys = reader.GetInt32(17)
+                            };
+                            bookList.Add(x);
                         }
                     }
                     ViewBag.srcError = null;
@@ -526,6 +544,7 @@ namespace Libreria_Elia_V0._0.Controllers
                             bookToUpdate.PublishingHouse = reader["publishing_house"].ToString();
                             bookToUpdate.ReleaseYear = reader["release_year"].ToString();
                             bookToUpdate.Language = reader["lang"].ToString();
+                            bookToUpdate.Genre = reader["genre"].ToString();
                             bookToUpdate.Volume = reader["volume"].ToString();
                             bookToUpdate.InventoryNumber = reader["inventory_number"].ToString();
                             bookToUpdate.Placement = reader["placement"].ToString();
@@ -550,7 +569,7 @@ namespace Libreria_Elia_V0._0.Controllers
             string query = @$"UPDATE books SET
 			isbn = '{book.Isbn}', title = '{book.Title}', subtitle = '{book.Subtitle}', author01 = '{book.Author01}', author02 = '{book.Author02}', author03 = '{book.Author03}',
 			publishing_house = '{book.PublishingHouse}', release_year = '{book.ReleaseYear}', lang = '{book.Language}', volume = '{book.Volume}', inventory_number = '{book.InventoryNumber}',
-			placement = '{book.Placement}', operator = '{book.Operator}', availability = '{book.Availability}', abstract = '{book.Abstract}' WHERE isbn = {book.Isbn};";
+			placement = '{book.Placement}', operator = '{book.Operator}', availability = '{book.Availability}', abstract = '{book.Abstract}' WHERE title = {book.Title};";
 
             try
             {
@@ -566,6 +585,22 @@ namespace Libreria_Elia_V0._0.Controllers
             }
             finally { AdminDbConn.Close(); }
             return RedirectToAction("BookListView");
+        }
+
+        [Route("Deletebook/{id}")]
+        public IActionResult DeleteBook(int id)
+        {
+            string q = $"DELETE FROM books WHERE book_id = @id;";
+            using (var conn = new MySqlConnection(AdminDbConn.ConnectionString))
+            {
+                conn.Open();
+                using (var cmd = new MySqlCommand(q, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
+                }
+            }  
+           return RedirectToAction("BookListView");
         }
     }
 }

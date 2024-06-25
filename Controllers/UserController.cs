@@ -93,13 +93,13 @@ namespace Libreria_Elia_V0._0.Controllers
             {
                 List<Book> bookList = new List<Book>();
                 string q = @$"SELECT * FROM books WHERE title LIKE '%{searchTerm}%'
-           UNION ALL SELECT * FROM books WHERE publishing_house LIKE '%{searchTerm}%' 
-           UNION ALL SELECT * FROM books WHERE isbn LIKE '%{searchTerm}%'
-           UNION ALL SELECT * FROM books WHERE author01 LIKE '%{searchTerm}%'
-           UNION ALL SELECT * FROM books WHERE author02 LIKE '%{searchTerm}%'
-           UNION ALL SELECT * FROM books WHERE author03 LIKE '%{searchTerm}%' 
-           UNION ALL SELECT * FROM books WHERE genre LIKE '%{searchTerm}%'
-           UNION ALL SELECT * FROM books WHERE isbn LIKE '%{searchTerm}%';";
+                   UNION ALL SELECT * FROM books WHERE publishing_house LIKE '%{searchTerm}%' 
+                   UNION ALL SELECT * FROM books WHERE isbn LIKE '%{searchTerm}%'
+                   UNION ALL SELECT * FROM books WHERE author01 LIKE '%{searchTerm}%'
+                   UNION ALL SELECT * FROM books WHERE author02 LIKE '%{searchTerm}%'
+                   UNION ALL SELECT * FROM books WHERE author03 LIKE '%{searchTerm}%' 
+                   UNION ALL SELECT * FROM books WHERE genre LIKE '%{searchTerm}%'
+                   UNION ALL SELECT * FROM books WHERE isbn LIKE '%{searchTerm}%';";
                 using (MySqlCommand srcCmd = new MySqlCommand(q, UserDbConn))
                 {
                     try

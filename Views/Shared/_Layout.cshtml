@@ -39,9 +39,12 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="LogForm">Login</a>
                             </li>
                         }
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ProfileMainPage">Your profile</a>
-                        </li>
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ProfileMainPage">Your profile</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

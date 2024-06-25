@@ -59,6 +59,14 @@
 }
 else
 {
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="FoundBooks" asp-controller="User" method="post">
+                <input type="text" name="searchTerm" placeholder="Cerca per: Titolo, Autore, Editore, ISBN o Genere" style="width:450px">
+                <button type="submit" class="btn btn-outline-secondary" style="margin-bottom: 10">Cerca</button>
+            </form>
+        </div>
+    </div>
     <h1>Nessun risultato Trovato</h1>
 
     <div aria-label="Orange and tan hamster running in a metal wheel" role="img" class="wheel-and-hamster">
